@@ -2,10 +2,10 @@
 
 namespace Mubarakismail\TelrPayment;
 
+use Illuminate\Support\Arr;
 use Illuminate\Contracts\Support\Arrayable;
 use Ramsey\Uuid\Uuid;
-use Arr;
-use Str;
+use Illuminate\Support\Str;
 
 class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
 {
@@ -19,15 +19,7 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     {
         $this->setOrderId($orderId);
         $this->setAmount($amount);
-        $this->setCartId(Uuid::uuid4()->toString().'-'.time());
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOrderId()
-    {
-        return data_get($this->data, 'order_id');
+        $this->setCartId(Uuid::uuid4()->toString() . '-' . time());
     }
 
     /**
@@ -42,11 +34,14 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     }
 
     /**
-     * @return mixed
+     * @param $amount
+     * @return $this
      */
-    public function getCartId()
+    public function setAmount($amount)
     {
-        return data_get($this->data, 'ivp_cart', null);
+        $this->data['ivp_amount'] = $amount;
+
+        return $this;
     }
 
     /**
@@ -63,28 +58,9 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     /**
      * @return mixed
      */
-    public function getAmount()
+    public function getOrderId()
     {
-        return data_get($this->data, 'ivp_amount', null);
-    }
-
-    /**
-     * @param $amount
-     * @return $this
-     */
-    public function setAmount($amount)
-    {
-        $this->data['ivp_amount'] = $amount;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCurrency()
-    {
-        return data_get($this->data, 'ivp_currency', config('telr.currency'));
+        return data_get($this->data, 'order_id');
     }
 
     /**
@@ -99,14 +75,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     }
 
     /**
-     * @return mixed
-     */
-    public function getDesc()
-    {
-        return Arr::has($this->data, 'ivp_desc') ? Str::limit($this->data['ivp_desc'], 60, '...') : null;
-    }
-
-    /**
      * @param $description
      * @return $this
      */
@@ -115,14 +83,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
         $this->data['ivp_desc'] = $description;
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSuccessURL()
-    {
-        return $this->appendOrderIdToURL(config('telr.create.return_auth'), $this->getCartId());
     }
 
     /**
@@ -137,14 +97,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     }
 
     /**
-     * @return mixed
-     */
-    public function getCancelURL()
-    {
-        return $this->appendOrderIdToURL(config('telr.create.return_can'), $this->getCartId());
-    }
-
-    /**
      * @param $returnCancelURL
      * @return $this
      */
@@ -153,14 +105,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
         $this->data['return_can'] = $returnCancelURL;
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDeclinedURL()
-    {
-        return $this->appendOrderIdToURL(config('telr.create.return_decl'), $this->getCartId());
     }
 
     /**
@@ -175,14 +119,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     }
 
     /**
-     * @return mixed
-     */
-    public function getBillingFirstName()
-    {
-        return data_get($this->data, 'bill_fname', null);
-    }
-
-    /**
      * @param $firstName
      * @return $this
      */
@@ -191,14 +127,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
         $this->data['bill_fname'] = $firstName;
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBillingSurName()
-    {
-        return data_get($this->data, 'bill_sname', null);
     }
 
     /**
@@ -213,14 +141,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     }
 
     /**
-     * @return mixed
-     */
-    public function getBillingAddress1()
-    {
-        return data_get($this->data, 'bill_addr1', null);
-    }
-
-    /**
      * @param $address
      * @return $this
      */
@@ -229,14 +149,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
         $this->data['bill_addr1'] = $address;
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBillingAddress2()
-    {
-        return data_get($this->data, 'bill_addr2', null);
     }
 
     /**
@@ -251,14 +163,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     }
 
     /**
-     * @return mixed
-     */
-    public function getBillingCity()
-    {
-        return data_get($this->data, 'bill_city', null);
-    }
-
-    /**
      * @param $city
      * @return $this
      */
@@ -267,14 +171,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
         $this->data['bill_city'] = $city;
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBillingRegion()
-    {
-        return data_get($this->data, 'bill_region', null);
     }
 
     /**
@@ -289,14 +185,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     }
 
     /**
-     * @return mixed
-     */
-    public function getBillingZip()
-    {
-        return data_get($this->data, 'bill_zip', null);
-    }
-
-    /**
      * @param $zip
      * @return $this
      */
@@ -308,14 +196,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     }
 
     /**
-     * @return mixed
-     */
-    public function getBillingCountry()
-    {
-        return data_get($this->data, 'bill_country', null);
-    }
-
-    /**
      * @param $country
      * @return $this
      */
@@ -324,14 +204,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
         $this->data['bill_country'] = $country;
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getBillingEmail()
-    {
-        return data_get($this->data, 'bill_email', null);
     }
 
     /**
@@ -359,31 +231,6 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
     }
 
     /**
-     * Get billing lang
-     *
-     * @return string|null
-     */
-    public function getLangCode()
-    {
-        return data_get($this->data, 'ivp_lang', null);
-    }
-
-    /**
-     * Append order id to URL
-     *
-     * @param $url
-     * @param $orderId
-     * @return string
-     */
-    protected function appendOrderIdToURL($url, $orderId)
-    {
-        $url = url($url);
-        $query = parse_url($url, PHP_URL_QUERY);
-
-        return $url .= ($query ? '&' : '?')."cart_id={$orderId}";
-    }
-
-    /**
      * Get the instance as an array.
      *
      * @return array
@@ -407,11 +254,176 @@ class CreateTelrRequest extends AbstractTelrRequest implements Arrayable
             'bill_sname' => $this->getBillingSurName(),
             'bill_addr1' => $this->getBillingAddress1(),
             'bill_addr2' => $this->getBillingAddress2(),
+            'bill_phone1' => $this->getBillingPhone(),
             'bill_city' => $this->getBillingCity(),
             'bill_region' => $this->getBillingRegion(),
             'bill_zip' => $this->getBillingZip(),
             'bill_country' => $this->getBillingCountry(),
             'bill_email' => $this->getBillingEmail(),
         ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCartId()
+    {
+        return data_get($this->data, 'ivp_cart', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAmount()
+    {
+        return data_get($this->data, 'ivp_amount', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrency()
+    {
+        return data_get($this->data, 'ivp_currency', config('telr.currency'));
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDesc()
+    {
+        return Arr::has($this->data, 'ivp_desc') ? Str::limit($this->data['ivp_desc'], 60, '...') : null;
+    }
+
+    /**
+     * Get billing lang
+     *
+     * @return string|null
+     */
+    public function getLangCode()
+    {
+        return data_get($this->data, 'ivp_lang', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSuccessURL()
+    {
+        return $this->appendOrderIdToURL(config('telr.create.return_auth'), $this->getCartId());
+    }
+
+    /**
+     * Append order id to URL
+     *
+     * @param $url
+     * @param $orderId
+     * @return string
+     */
+    protected function appendOrderIdToURL($url, $orderId)
+    {
+        $url = url($url);
+        $query = parse_url($url, PHP_URL_QUERY);
+
+        return $url .= ($query ? '&' : '?') . "cart_id={$orderId}";
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCancelURL()
+    {
+        return $this->appendOrderIdToURL(config('telr.create.return_can'), $this->getCartId());
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeclinedURL()
+    {
+        return $this->appendOrderIdToURL(config('telr.create.return_decl'), $this->getCartId());
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBillingFirstName()
+    {
+        return data_get($this->data, 'bill_fname', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBillingSurName()
+    {
+        return data_get($this->data, 'bill_sname', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBillingAddress1()
+    {
+        return data_get($this->data, 'bill_addr1', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBillingAddress2()
+    {
+        return data_get($this->data, 'bill_addr2', null);
+    }
+
+    public function getBillingPhone()
+    {
+        return data_get($this->data, 'bill_phone1', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBillingCity()
+    {
+        return data_get($this->data, 'bill_city', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBillingRegion()
+    {
+        return data_get($this->data, 'bill_region', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBillingZip()
+    {
+        return data_get($this->data, 'bill_zip', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBillingCountry()
+    {
+        return data_get($this->data, 'bill_country', null);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBillingEmail()
+    {
+        return data_get($this->data, 'bill_email', null);
+    }
+
+    protected function setBillingPhone($phone)
+    {
+        $this->data['bill_phone1'] = $phone;
+        return $this;
     }
 }
