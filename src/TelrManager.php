@@ -9,7 +9,7 @@ use Mubarakismail\TelrPayment\Events\TelrCreateRequestEvent;
 use Mubarakismail\TelrPayment\Events\TelrFailedTransactionEvent;
 use Mubarakismail\TelrPayment\Events\TelrRecieveTransactionResponseEvent;
 use Mubarakismail\TelrPayment\Events\TelrSuccessTransactionEvent;
-use Str;
+use Illuminate\Support\Str;
 
 class TelrManager
 {
